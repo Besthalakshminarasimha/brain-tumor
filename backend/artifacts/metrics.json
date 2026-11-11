@@ -1,0 +1,71 @@
+{
+  "accuracy": 0.9554079696394687,
+  "precision": 0.9531816213021342,
+  "recall": 0.9543070691122821,
+  "f1_score": 0.9536858953442767,
+  "classes": [
+    "glioma",
+    "meningioma",
+    "no_tumor",
+    "pituitary"
+  ],
+  "confusion_matrix": [
+    [
+      210,
+      8,
+      0,
+      1
+    ],
+    [
+      11,
+      239,
+      4,
+      7
+    ],
+    [
+      2,
+      1,
+      301,
+      2
+    ],
+    [
+      2,
+      9,
+      0,
+      257
+    ]
+  ],
+  "per_class": {
+    "glioma": {
+      "precision": 0.9333333333333333,
+      "recall": 0.958904109589041,
+      "f1_score": 0.9459459459459458,
+      "support": 219
+    },
+    "meningioma": {
+      "precision": 0.9299610894941635,
+      "recall": 0.9157088122605364,
+      "f1_score": 0.9227799227799227,
+      "support": 261
+    },
+    "no_tumor": {
+      "precision": 0.9868852459016394,
+      "recall": 0.9836601307189542,
+      "f1_score": 0.9852700490998363,
+      "support": 306
+    },
+    "pituitary": {
+      "precision": 0.9625468164794008,
+      "recall": 0.9589552238805971,
+      "f1_score": 0.960747663551402,
+      "support": 268
+    }
+  },
+  "evaluated_at": "2026-11-02T06:10:10.560833+00:00",
+  "evaluation_split": "official source test split; patient-level separation is not documented by the source",
+  "validation_loss": 0.17564692854881286,
+  "calibration_temperature": 1.289993582109241,
+  "calibration_nll_before": 0.17564694688331253,
+  "calibration_nll_after": 0.16660252004774936,
+  "expected_calibration_error": 0.014462452246853153
+}

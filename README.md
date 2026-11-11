@@ -4,7 +4,7 @@ A local-first research prototype for reviewing 2D brain MRI images, preprocessin
 
 **[Open the website](https://besthalakshminarasimha.github.io/brain-tumor/)**
 
-**This is not a medical device and does not provide a diagnosis.** It ships without pretrained weights. Predictions are unavailable until a model has been trained locally, and training metrics do not establish clinical validity. Do not use the output to make patient-care decisions.
+**This is not a medical device and does not provide a diagnosis.** The deployed demo includes a research-only checkpoint trained from the public sample dataset; its metrics do not establish clinical validity. Do not use the output to make patient-care decisions.
 
 ### Public API deployment
 
@@ -64,7 +64,7 @@ It also runs a research robustness stress test across mild intensity perturbatio
 - DICOM/NIfTI identifiers are not returned to the browser or written to the local case database. The API reports de-identification as applied and records only a sanitized filename, timestamp, role, and event type in its local audit table. This is a technical safeguard, not a complete HIPAA/GDPR compliance program.
 - Preprocessing controls expose auto-crop, median noise reduction, and a clearly labeled research skull mask. These are not validated skull stripping or clinical preprocessing algorithms.
 - The dashboard provides a local history timeline, structured radiologist notes, role labeling (Admin/Radiologist/Patient), audit-log protection for the Admin role, and browser print-to-PDF for the current research review.
-- The existing trained classifier and Grad-CAM explanation remain available when a local model is trained. Segmentation masks, tumor volume, and severity/grade are explicitly reported as unavailable until a validated segmentation/ grading model is configured; a Grad-CAM heatmap is not a tumor contour.
+- The deployed API includes the checkpoint under `backend/artifacts/` and can generate research predictions after the ML runtime is installed. You can replace it by training a new model. Segmentation masks, tumor volume, and severity/grade are explicitly reported as unavailable until a validated segmentation/grading model is configured; a Grad-CAM heatmap is not a tumor contour.
 
 ### Public sample dataset
 

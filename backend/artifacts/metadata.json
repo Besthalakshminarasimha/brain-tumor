@@ -1,0 +1,25 @@
+{
+  "model_name": "Brain MRI ResNet-18",
+  "classes": [
+    "glioma",
+    "meningioma",
+    "no_tumor",
+    "pituitary"
+  ],
+  "input_size": 160,
+  "architecture": "resnet18_transfer",
+  "max_train_samples_per_class": 500,
+  "training_image_count": 1600,
+  "validation_image_count": 400,
+  "validation_split": "stratified 80/20 split from the source training partition",
+  "evaluation_split": "official source test split; patient-level separation is not documented by the source",
+  "patient_level_separation_documented": false,
+  "trained_at": "2026-11-02T06:10:10.560850+00:00",
+  "calibration_temperature": 1.289993582109241,
+  "calibration_method": "scalar temperature scaling on training-only validation images",
+  "calibration_image_count": 400,
+  "calibration_nll_before": 0.17564694688331253,
+  "calibration_nll_after": 0.16660252004774936,
+  "calibration_test_image_count": 1054,
+  "expected_calibration_error": 0.014462452246853153
+}
