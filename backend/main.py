@@ -65,6 +65,24 @@ dataset_state: dict[str, Any] = {
     "message": None,
     "error": None,
 }
+prediction_runtime_warmed = False
+
+
+@app.on_event("startup")
+def warm_prediction_runtime() -> None:
+    global prediction_runtime_warmed
+    if prediction_runtime_warmed:
+        return
+    if model_metadata() is None or not ml_dependencies_ready():
+        return
+    from .modeling import predict
+
+    predict(
+        Image.new("L", (32, 32), color=0),
+        MODEL_PATH,
+        METADATA_PATH,
+    )
+    prediction_runtime_warmed = True
 
 
 def get_dataset_state() -> dict[str, Any]:
