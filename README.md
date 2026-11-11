@@ -9,7 +9,7 @@ A local-first research prototype for reviewing 2D brain MRI images, preprocessin
 ### Public API deployment
 
 The GitHub Pages frontend uses the public FastAPI URL
-`https://brain-tumor-api.onrender.com`. To deploy the API, create a new Render Blueprint
+`https://brain-tumor-api-pxxf.onrender.com`. To deploy the API, create a new Render Blueprint
 from this repository and select `render.yaml`. Render will build the Python service,
 expose `/api/status` as its health check, and allow the deployed website through CORS.
 The free Render service may sleep when idle and will restart on the next request.
