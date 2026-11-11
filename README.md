@@ -8,10 +8,16 @@ A local-first research prototype for reviewing 2D brain MRI images, preprocessin
 
 ### Public API deployment
 
-The GitHub Pages frontend uses the public FastAPI URL
-`https://brain-tumor-api-pxxf.onrender.com`. To deploy the API, create a new Render Blueprint
-from this repository and select `render.yaml`. Render will build the Python service,
-expose `/api/status` as its health check, and allow the deployed website through CORS.
+The deployed frontends use the public FastAPI URL
+`https://brain-tumor-api-pxxf.onrender.com`. The repository includes configuration for both
+GitHub Pages (`.github/workflows/deploy-pages.yml`) and Netlify (`netlify.toml`). Netlify
+builds at the site root while GitHub Pages builds under `/brain-tumor/`, so the same source
+works on both hosts. Netlify preview and production domains ending in `.netlify.app` are
+allowed by the API CORS configuration.
+
+To deploy the API, create a new Render Blueprint from this repository and select `render.yaml`.
+Render will build the Python service and expose `/api/status` as its health check. If a custom
+Netlify domain is used, add that exact origin to the Render `CORS_ORIGINS` environment variable.
 The free Render service may sleep when idle and will restart on the next request.
 
 The API stores its SQLite database, uploaded research data, and model artifacts on the

@@ -34,6 +34,7 @@ jobs:
       - name: Build frontend
         env:
           VITE_API_URL: https://brain-tumor-api-pxxf.onrender.com
+          VITE_BASE_PATH: /brain-tumor/
         run: npm run build
 
       - name: Configure Pages

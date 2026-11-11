@@ -9,3 +9,5 @@ services:
     envVars:
       - key: CORS_ORIGINS
         value: https://besthalakshminarasimha.github.io,http://127.0.0.1:5173,http://localhost:5173
+      - key: CORS_ORIGIN_REGEX
+        value: ^https://([a-z0-9-]+\.)?netlify\.app$

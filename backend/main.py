@@ -43,9 +43,14 @@ allowed_origins = [
     ).split(",")
     if origin.strip()
 ]
+allowed_origin_regex = os.environ.get(
+    "CORS_ORIGIN_REGEX",
+    r"^https://([a-z0-9-]+\.)?netlify\.app$",
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=allowed_origin_regex,
     allow_methods=["*"],
     allow_headers=["*"],
 )
