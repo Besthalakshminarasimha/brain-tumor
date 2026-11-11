@@ -17,7 +17,7 @@ from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import numpy as np
-from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageOps, UnidentifiedImageError
+from PIL import Image, ImageDraw, ImageFilter, ImageOps, UnidentifiedImageError
 from pydicom import dcmread
 from pydicom.errors import InvalidDicomError
 from pydantic import BaseModel, Field
@@ -204,7 +204,6 @@ def research_robustness_check(image: Image.Image, model_path: Path, metadata_pat
 
     variants = {
         "original": image,
-        "slightly_brighter": ImageEnhance.Brightness(image).enhance(1.08),
     }
     outputs = []
     for name, variant in variants.items():
@@ -220,7 +219,7 @@ def research_robustness_check(image: Image.Image, model_path: Path, metadata_pat
         "variants": outputs,
         "agreement": round(agreement, 3),
         "stable": agreement == 1.0,
-        "interpretation": "research stress test under mild intensity perturbations; not clinical validation",
+        "interpretation": "baseline prediction check; perturbation stress testing is disabled on the public CPU service to keep requests reliable",
     }
 
 
