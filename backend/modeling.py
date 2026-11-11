@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import json
+import os
 import random
 from collections import defaultdict
 from datetime import datetime, timezone
@@ -594,17 +595,21 @@ def predict(image: Image.Image, model_path: Path, metadata_path: Path) -> dict:
     model.zero_grad(set_to_none=True)
     logits = model(inputs)
     class_index = int(logits.argmax(dim=1).item())
-    logits[0, class_index].backward()
+    fast_inference = os.environ.get("DISABLE_GRADCAM", "").lower() in {"1", "true", "yes"}
     hook.remove()
+    if fast_inference:
+        heatmap = inputs[0, 0].detach()
+    else:
+        logits[0, class_index].backward()
+        if activation is None or gradient is None:
+            raise RuntimeError("Could not generate an explanation map for this model.")
+        weights = gradient.mean(dim=(2, 3), keepdim=True)
+        heatmap = torch.relu((weights * activation).sum(dim=1, keepdim=True))[0, 0]
 
     calibration_temperature = float(metadata.get("calibration_temperature", 1.0))
     if not np.isfinite(calibration_temperature) or calibration_temperature <= 0:
         calibration_temperature = 1.0
     probabilities = torch.softmax(logits.detach() / calibration_temperature, dim=1)[0].tolist()
-    if activation is None or gradient is None:
-        raise RuntimeError("Could not generate an explanation map for this model.")
-    weights = gradient.mean(dim=(2, 3), keepdim=True)
-    heatmap = torch.relu((weights * activation).sum(dim=1, keepdim=True))[0, 0]
     heatmap = heatmap / (heatmap.max() + 1e-8)
     heatmap_pixels = np.uint8(heatmap.detach().numpy() * 255)
     heat_image = Image.fromarray(heatmap_pixels, mode="L").resize(image.size, Image.Resampling.BILINEAR)
@@ -626,5 +631,10 @@ def predict(image: Image.Image, model_path: Path, metadata_path: Path) -> dict:
         "probabilities": dict(zip(classes, probabilities)),
         "tumor_present": None if "no_tumor" not in classes else predicted_class != "no_tumor",
         "heatmap_data_url": heatmap_url,
-        "explanation_note": "Grad-CAM is an exploratory visualization and is not a segmentation or a clinical finding.",
+        "explanation_note": (
+            "Input-intensity overlay used on the public CPU service; it is not Grad-CAM, "
+            "a segmentation, or a clinical finding."
+            if fast_inference
+            else "Grad-CAM is an exploratory visualization and is not a segmentation or a clinical finding."
+        ),
     }
