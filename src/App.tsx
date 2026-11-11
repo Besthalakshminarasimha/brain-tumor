@@ -31,6 +31,9 @@ import {
 } from 'lucide-react'
 import './App.css'
 
+const API_BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
+const apiUrl = (path: string) => `${API_BASE_URL}${path}`
+
 type Screen = 'review' | 'training' | 'evaluation' | 'dashboard'
 type CaseRecord = { id: string; filename: string; created_at: string; status: string }
 type ApiStatus = {
@@ -218,11 +221,11 @@ function App() {
 
   async function refresh() {
     const [statusResult, casesResult, metricsResult, datasetResult, researchResult] = await Promise.allSettled([
-      fetch('/api/status').then((response) => response.json() as Promise<ApiStatus>),
-      fetch('/api/cases').then((response) => response.json() as Promise<CaseRecord[]>),
-      fetch('/api/metrics').then((response) => response.json() as Promise<{ metrics: Metrics }>),
-      fetch('/api/dataset').then((response) => response.json() as Promise<DatasetStatus>),
-      fetch('/api/datasets/research').then((response) => response.json() as Promise<{ sources: ResearchDataset[] }>),
+      fetch(apiUrl('/api/status')).then((response) => response.json() as Promise<ApiStatus>),
+      fetch(apiUrl('/api/cases')).then((response) => response.json() as Promise<CaseRecord[]>),
+      fetch(apiUrl('/api/metrics')).then((response) => response.json() as Promise<{ metrics: Metrics }>),
+      fetch(apiUrl('/api/dataset')).then((response) => response.json() as Promise<DatasetStatus>),
+      fetch(apiUrl('/api/datasets/research')).then((response) => response.json() as Promise<{ sources: ResearchDataset[] }>),
     ])
     if (statusResult.status === 'fulfilled') setStatus(statusResult.value)
     if (casesResult.status === 'fulfilled') setCases(casesResult.value)
@@ -279,13 +282,13 @@ function App() {
       body.append('auto_crop', String(autoCrop))
       body.append('noise_reduction', String(noiseReduction))
       body.append('skull_stripping', String(skullStripping))
-      const response = await fetch('/api/preprocess', { method: 'POST', body, headers: { 'X-User-Role': role } })
+      const response = await fetch(apiUrl('/api/preprocess'), { method: 'POST', body, headers: { 'X-User-Role': role } })
       if (response.ok) {
         const result = await response.json() as { preview_data_url: string; scan_metadata: ScanMetadata; quality_metrics?: AnalysisResult['quality_metrics'] }
         setPreviewUrl(result.preview_data_url)
         setScanMetadata(result.scan_metadata)
       }
-      const caseResponse = await fetch('/api/cases', {
+      const caseResponse = await fetch(apiUrl('/api/cases'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename: nextFile.name }),
@@ -308,7 +311,7 @@ function App() {
     try {
       const body = new FormData()
       body.append('file', file)
-      const response = await fetch('/api/analyze', { method: 'POST', body, headers: { 'X-User-Role': role } })
+      const response = await fetch(apiUrl('/api/analyze'), { method: 'POST', body, headers: { 'X-User-Role': role } })
       const result = await response.json() as AnalysisResult & { detail?: string }
       if (response.ok) {
         setAnalysis(result)
@@ -329,7 +332,7 @@ function App() {
     setBusy(true)
     setMessage('')
     try {
-      const response = await fetch('/api/train', {
+      const response = await fetch(apiUrl('/api/train'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dataset_path: datasetPath, epochs, architecture, max_train_samples_per_class: maxTrainSamplesPerClass }),
@@ -348,7 +351,7 @@ function App() {
     setBusy(true)
     setMessage('')
     try {
-      const response = await fetch('/api/dataset/prepare', { method: 'POST' })
+      const response = await fetch(apiUrl('/api/dataset/prepare'), { method: 'POST' })
       const result = await response.json() as { detail?: string; message?: string }
       setMessage(response.ok ? result.message ?? 'Dataset preparation started.' : result.detail ?? 'Dataset preparation could not be started.')
       await refresh()

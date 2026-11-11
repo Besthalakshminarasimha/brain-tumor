@@ -6,6 +6,18 @@ A local-first research prototype for reviewing 2D brain MRI images, preprocessin
 
 **This is not a medical device and does not provide a diagnosis.** It ships without pretrained weights. Predictions are unavailable until a model has been trained locally, and training metrics do not establish clinical validity. Do not use the output to make patient-care decisions.
 
+### Public API deployment
+
+The GitHub Pages frontend uses the public FastAPI URL
+`https://brain-tumor-api.onrender.com`. To deploy the API, create a new Render Blueprint
+from this repository and select `render.yaml`. Render will build the Python service,
+expose `/api/status` as its health check, and allow the deployed website through CORS.
+The free Render service may sleep when idle and will restart on the next request.
+
+The API stores its SQLite database, uploaded research data, and model artifacts on the
+service filesystem. These are local research/demo artifacts and should not be treated
+as durable production storage.
+
 ## Run locally
 
 Requirements: Node.js 20.19+ and Python 3.10+.

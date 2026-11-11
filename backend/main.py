@@ -7,12 +7,14 @@ import json
 import sqlite3
 import threading
 import uuid
+import os
 from contextlib import closing
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import numpy as np
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageOps, UnidentifiedImageError
@@ -33,6 +35,20 @@ MAX_IMAGE_DIMENSION = 8192
 MAX_IMAGE_PIXELS = 40_000_000
 
 app = FastAPI(title="Neuro Imaging Lab API", version="0.1.0")
+allowed_origins = [
+    origin.strip()
+    for origin in os.environ.get(
+        "CORS_ORIGINS",
+        "http://127.0.0.1:5173,http://localhost:5173",
+    ).split(",")
+    if origin.strip()
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 training_lock = threading.Lock()
 training_state: dict[str, Any] = {
     "running": False,
