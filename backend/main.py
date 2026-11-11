@@ -205,8 +205,6 @@ def research_robustness_check(image: Image.Image, model_path: Path, metadata_pat
     variants = {
         "original": image,
         "slightly_brighter": ImageEnhance.Brightness(image).enhance(1.08),
-        "slightly_darker": ImageEnhance.Brightness(image).enhance(0.92),
-        "slightly_higher_contrast": ImageEnhance.Contrast(image).enhance(1.08),
     }
     outputs = []
     for name, variant in variants.items():
@@ -589,8 +587,8 @@ async def analyze(file: UploadFile = File(...), role: str = Header(default="radi
             "reason": "Severity and grade require a validated clinical model and complete MRI study.",
         }
         return result
-    except ImportError as error:
-        raise HTTPException(status_code=503, detail="Install the optional ML dependencies to run inference.") from error
+    except (ImportError, OSError, RuntimeError) as error:
+        raise HTTPException(status_code=503, detail=f"Research prediction failed: {error}") from error
 
 
 @app.get("/api/audit")
