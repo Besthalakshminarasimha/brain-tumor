@@ -5,3 +5,5 @@ pillow>=10.3,<13
 numpy>=1.26,<3
 pydicom>=3.0,<4
 nibabel>=5.3,<6
+torch>=2.4,<3
+torchvision>=0.19,<1
