@@ -2,6 +2,8 @@
 
 A local-first research prototype for reviewing 2D brain MRI images, preprocessing scans, training a CNN from a labeled dataset, and inspecting held-out metrics and Grad-CAM visualizations.
 
+**[Open the website](https://besthalakshminarasimha.github.io/brain-tumor/)**
+
 **This is not a medical device and does not provide a diagnosis.** It ships without pretrained weights. Predictions are unavailable until a model has been trained locally, and training metrics do not establish clinical validity. Do not use the output to make patient-care decisions.
 
 ## Run locally
